@@ -126,50 +126,59 @@ PATH="$HOME/bin:$PATH" PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig"
 FFmpeg sources are in \~/ffmpeg\_sources, we are ready to make necessary edits. 
 OpenVisualCloud's guide applies patches to make these edits; while this procedure
 is time- and effort saving, I recommend to manually edit the files to become
-familiar with the sources. You can also ignore my advices: to help you, I provide
-updated files in the folder `ffmpeg` and its subfolders.
+familiar with the sources. You can also ignore my advices: to help you continue
+with with installation for jpeg-xs integration, I provide updated files in the 
+folder `ffmpeg` and its subfolders.
 
 #### 5. What files need to be updated/added to the project
 
-You have to edit the files in the libavcodec folder from the FFmpeg repo:
+You have to edit these files which you find in the libavcodec folder of the FFmpeg 
+repo:
 ```
 libavcodec/
-	codec\_desc.c
-	codec\_id.h
+	codec_desc.c
+	codec_id.h
 	allcodecs.c
 	Makefile
 ```
-the files in the libavformat folder:
+and the files in the libavformat folder:
 ```
 libavformat/
 	isom.c
-	isom\_tags.c
+	isom_tags.c
 	movenc.c
 ```
-and
+and the file in the root (ffmpeg) folder:
 ```
 configure
 ```
-in the repo root (ffmpeg).
-
 In the folders with my repo you see three type files: for example, 1) `codec_desc.c` 
-(updated copy), 2) `codec_desc.c.in` (codec\_desc.c was copied to the file of the 
-same name with suffix .in added), 3) `codec_desc_c.diff` (the output of 
-`$git diff codec_desc.c codec_desc.c.in`). This \*.diff files are used to automate
-applying of patches; you can use these to manually edit the sources.
+(updated source file), 2) `codec_desc.c.in` (codec\_desc.c was copied to the file 
+of the same name with a suffix `.in` added), 3) `codec_desc_c.diff` (the output of 
+`$git diff codec_desc.c codec_desc.c.in`). These \*.diff files are used to automate
+applying of patches; you can read their content and manually edit the sources.
 
+**DO NOT FORGET**
 You have to add two extra files to the `libavcodec` folder, libsvtjpegxs(dec,enc).c.
 These two files can be found in the `ffmpeg-plugin` folder of SVT-JPEG-XS repo; 
-I put these into the `libavcodec` folder. File libsvtjpegxs(dec,enc).c of my repo 
-is edited (added the line #include "libavutil/mem.h"): you should use this edited file.
+I put these into my `libavcodec` folder. File libsvtjpegxsdec.c in my repo 
+is edited (I added the line #include "libavutil/mem.h"). You should use this edited 
+file which directly includes "mem.h": the header file "mem.h" won't be accessed via 
+"libavutil/common.h" header as the symbol HAVE_AV_CONFIG_H is defined in the 
+compilation.
 
 #### 6. FFmpeg configure
-In [Compile FFmpeg for Ubuntu, Debian, or Mint](https://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu).
+In [Compile FFmpeg for Ubuntu, Debian, or Mint](https://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu)
 you can see an example of FFmpeg full-fledged configuration. For demonstration of 
-FFmpeg integration with SVT-JPEG-XS you can use much simpler ./configure command:
+FFmpeg integration with SVT-JPEG-XS it may be sufficient to use much simpler 
+./configure command, as many components of ordinary use are default enabled:
 ```
 $ ./configure --enable-libsvtjpegxs --prefix=$INSTALL_DIR --enable-shared
 ```
+Sure, you can use the ./configure command from 'Compile FFmpeg for Ubuntu, Debian, 
+or Mint' with multiple `--enable-...`-s, only do not forget to add 
+`--enable-libsvtjpegxs`, `--prefix=...` and `--enable-shared`.
+
 #### 7. make, make install
 ```
 make -j4
@@ -178,7 +187,29 @@ make install
 and enhanced FFmpeg is ready to use!
 
 #### 5 Demonstration
+Let we transcode a video file \<videofilename>.mp4 using jpegxs encoder for output. In this
+example, we also change the container but you can stay with the original container, if you like:
 ```
 wsluser@Computer:~$ ./ffmpeg -i \<videofilename>.mp4 -c:v jpegxs -bpp 1 \<videofilename>_jxs.mkv
+```
+The console output confirms that we re-encode the video stream with a `jpegxs` encoder:
+```
+   Stream #0:0 -> #0:0 (h264 (native) -> jpegxs (libsvtjpegxs))
+```
+You can also verify the info with `ffprobe`.
+
+You can replay `<videofilename>_jxs.mkv` with your newly compiled ffplay, but not with
+a standard player: maybe this would change when ISO21122 becomes well establshed.
+
+And finally, you can verify that an individual frame extracted from the video file is
+an image encoded in jpegxs format: the output of this command
+```
 wsluser@Computer:~$ ./ffmpeg -ss 00:00:01 -i <videofilename>_jxs.mkv -frames:v 1 -c:v jpegxs -bpp 1 <videofilename>_oneframe.jxs
 ```
+, `\<videofilename>_oneframe.jxs`, can be decoded with SvtJpegxsDecApp or Fraunhofer's 
+jxs\_decoder or viewed with a dedicated jpegxs viewer of your choice.
+
+### TODO:
+* Chapter on MSYS2 installation
+* Chapter on RFC9134 streaming(?)
+
