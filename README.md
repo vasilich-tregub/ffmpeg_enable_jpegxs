@@ -190,7 +190,7 @@ and enhanced FFmpeg is ready to use!
 Let we transcode a video file \<videofilename>.mp4 using jpegxs encoder for output. In this
 example, we also change the container but you can stay with the original container, if you like:
 ```
-wsluser@Computer:~$ ./ffmpeg -i \<videofilename>.mp4 -c:v jpegxs -bpp 1 \<videofilename>_jxs.mkv
+$ ./ffmpeg -i \<videofilename>.mp4 -c:v jpegxs -bpp 1 \<videofilename>_jxs.mkv
 ```
 The console output confirms that we re-encode the video stream with a `jpegxs` encoder:
 ```
@@ -204,7 +204,7 @@ a standard player: maybe this would change when ISO21122 becomes well establshed
 And finally, you can verify that an individual frame extracted from the video file is
 an image encoded in jpegxs format: the output of this command
 ```
-wsluser@Computer:~$ ./ffmpeg -ss 00:00:01 -i <videofilename>_jxs.mkv -frames:v 1 -c:v jpegxs -bpp 1 <videofilename>_oneframe.jxs
+$ ./ffmpeg -ss 00:00:01 -i <videofilename>_jxs.mkv -frames:v 1 -c:v jpegxs -bpp 1 <videofilename>_oneframe.jxs
 ```
 , `\<videofilename>_oneframe.jxs`, can be decoded with SvtJpegxsDecApp or Fraunhofer's 
 jxs\_decoder or viewed with a dedicated jpegxs viewer of your choice.
