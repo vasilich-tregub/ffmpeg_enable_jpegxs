@@ -1,5 +1,15 @@
 # ffmpeg: enable jpegxs codec
 
+FFmpeg is the swiss army knife of video streaming not only because of the exhaustive  
+scope of included codecs and muxdemuxes but also because of the range of applications 
+where FFmpeg is used. Even applications based on legacy solutions (like VfW) benefit from 
+using this pillar of media streaming, and they replace an imposing motley heap of 
+miscellaneous codecs, often piling up around a long-lived system, with a universal 
+FFmpeg-based component.
+
+Multiple uses of FFmpeg make it the ideal place where to incorporate a newly developed 
+codec in the pipeline.
+
 ## Linux ffmpeg plugin
 As compared with OpenVisualCloud's 
 [SVT-JPEG-XS/ffmpeg-plugin/readme](https://github.com/OpenVisualCloud/SVT-JPEG-XS/tree/main/ffmpeg-plugin),
