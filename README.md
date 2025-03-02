@@ -5,7 +5,7 @@ scope of included codecs and muxdemuxes but also because of the range of applica
 where FFmpeg is used. Even applications based on legacy solutions (like VfW) benefit from 
 using this pillar of media streaming, and they replace an imposing motley heap of 
 miscellaneous codecs, often piling up around a long-lived system, with a universal 
-FFmpeg-based component.
+FFmpeg-based component (see USECASE(VFW).md in this manual).
 
 Multiple uses of FFmpeg make it the ideal place where to incorporate a newly developed 
 codec in the pipeline.
