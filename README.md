@@ -177,6 +177,10 @@ file which directly includes "mem.h": the header file "mem.h" won't be accessed 
 "libavutil/common.h" header as the symbol HAVE_AV_CONFIG_H is defined in the 
 compilation.
 
+__ALTERNATIVELY, to exonerate yourself of the pains of these file edits/adds, you can 
+checkout to release/7.1, and then apply the cumulative patch (0001-enable-libsvtjpegxs.patch) 
+downloaded from this folder.__
+
 #### 6. FFmpeg configure
 In [Compile FFmpeg for Ubuntu, Debian, or Mint](https://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu)
 you can see an example of FFmpeg full-fledged configuration. For demonstration of 
