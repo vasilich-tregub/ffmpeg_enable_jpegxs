@@ -12,8 +12,9 @@ codec in the pipeline.
 
 ## Linux ffmpeg plugin
 As compared with OpenVisualCloud's 
-[SVT-JPEG-XS/ffmpeg-plugin/readme](https://github.com/OpenVisualCloud/SVT-JPEG-XS/tree/main/ffmpeg-plugin),
-this repository explores SVT-JPEG-XS codec integration into FFmpeg while giving 
+[SVT-JPEG-XS/ffmpeg-plugin/readme](https://github.com/OpenVisualCloud/SVT-JPEG-XS/tree/main/ffmpeg-plugin) 
+(how it read as of April 10, 2025) my repository [vasilich-tregub/SVT-JPEG-XS](https://github.com/vasilich-tregub/SVT-JPEG-XS)
+(now closed pull request) explores SVT-JPEG-XS codec integration into FFmpeg while giving 
 details about FFmpeg installation with WSL's Ubuntu 24.04 (Noble Numbat) distribution.
 
 To include as many details as may be required, let us presume that we start with 
@@ -223,7 +224,96 @@ $ ./ffmpeg -ss 00:00:01 -i <videofilename>_jxs.mkv -frames:v 1 -c:v jpegxs -bpp 
 , `\<videofilename>_oneframe.jxs`, can be decoded with SvtJpegxsDecApp or Fraunhofer's 
 jxs\_decoder or viewed with a dedicated jpegxs viewer of your choice.
 
+## Chapter on MSYS2 installation
+
+As of April 2025, OpenVisualCloud's instructions for Windows on their JPEG-XS codec integration into FFmpeg 
+with MSYS2 development platform were incorrect and their code in the folder ffmpeg-plugin failed to compile 
+(see OpenVisualCloud's repo [SVT-JPEG-XS](https://github.com/OpenVisualCloud/SVT-JPEG-XS) ). In my pull 
+request [vasilich-tregub/SVT-JPEG-XS](https://github.com/vasilich-tregub/SVT-JPEG-XS), I corrected their code 
+(details see in the QA session of communication the maintainer and me had around my PR) and gave detailed 
+instructions on building JPEGXS-enabled FFmpeg for Windows in a document 
+[wsl2msys2](https://github.com/vasilich-tregub/SVT-JPEG-XS/blob/main/ffmpeg-plugin/wsl2msys2.md). The section 
+on installing ffmpeg pluging for Windows follows.
+
+## Windows (MSYS2) ffmpeg plugin
+
+### Preliminary
+First, install MSYS2 and build SVT-JPEG-XS, as described in MSYS2build.md of the root folder.
+
+Export installation location:
+```
+mkdir -p $HOME/install-dir
+export INSTALL_DIR="$HOME/install-dir"
+export LD_LIBRARY_PATH="$INSTALL_DIR/lib:${LD_LIBRARY_PATH}"
+export PKG_CONFIG_PATH="$INSTALL_DIR/lib/pkgconfig:${PKG_CONFIG_PATH}"
+```
+(Do not forget to save these env vars to your profile, otherwise you have to 
+make this exports with each new login.)
+
+### 1. Prepare FFmpeg build
+Some components of FFmpeg require, besides yasm, also NASM compiler:
+```
+pacboy -S nasm:u
+```
+Git clone FFMPEG:
+```
+cd $HOME/
+git clone https://git.ffmpeg.org/ffmpeg.git
+```
+External libraries can be pacboy-installed:
+```
+pacboy -S dav1d:u
+pacboy -S SDL2:u
+```
+The libraries svt-av1 and vmaf can also be apt installed:
+```
+pacboy -S svt-av1:u
+pacboy -S vmaf:u
+```
+You may need the libsvtav1 codec only if you plan to checkout ffmpeg to `release/7.1`. 
+Netflix's vmaf is used to assess perceptual visual quality of video.
+
+pkg-config is already installed (with pacboy -S toolchain:u), so you can verify 
+`pkg-config --libs SvtAv1Enc`.
+
+### 1a. Checkout to branch 6.1 or 7.0 or 7.1 and apply patches
+Exactly as in the subsection __6. Checkout to branch 6.1 or 7.0 or 7.1 and apply patches__ 
+of the __Linux(WSL2) ffmpeg plugin__ section of this document.
+### 3. FFmpeg configure
+
+```
+./configure --prefix=$HOME/install-dir --bindir=$HOME/bin \
+--disable-doc --disable-everything --disable-network \
+--enable-libdav1d --enable-libsvtjpegxs \
+--enable-decoder='aac,ac3,h264,hevc,libdav1d,libsvtjpegxs' \
+--enable-encoder='aac,ac3,wrapped_avframe,libsvtjpegxs' 
+--enable-filter='scale,aresample' \
+--enable-demuxer='mov,mp4,matroska,m4v,ivf,yuv4mpegpipe' \
+--enable-muxer='avif,mov,matroska,m4v,yuv4mpegpipe' \
+--enable-sdl2 --enable-outdev=sdl2 \
+--enable-protocol='file,pipe'
+```
+and the 'routine tasks' are typical operations with multimedia streams, as transcode, 
+open/write files, and playback streams with ffplay.
+
+You can add the flag `--enable-libsvtav1` and the encoder `libsvtav1` to this `configure`
+only when having done checkout to `release/7.1`.
+
+### 3. make, make install
+The only eyebrow-raising detail of the following operations is the `make` tool name 
+from the `mingw-w64-ucrt64-x86_64-toolchain` packet group -- `mingw32-make`. Is it 
+somehow related to the 32-bit architecture? No more than the symbol _WIN32 in
+MSVC. GNU projects use so-called "GNU triplets" to specify architecture 
+information. A triplet has this format: `machine-vendor-operatingsystem`.
+See explanation in the answer to SO question 
+https://stackoverflow.com/questions/47585357/why-do-mingw-binaries-have-such-complicated-names-e-g-i686-w64-mingw32 .
+So, mingw32 -- in this context -- is a marker of (fictitious?) operating system!
+```
+mingw32-make -j10
+mingw32-make install
+```
+You can use a newly build FFMPEG with libsvtjpegxs encoder.
+
 ### TODO:
-* Chapter on MSYS2 installation
 * Chapter on RFC9134 streaming(?)
 
