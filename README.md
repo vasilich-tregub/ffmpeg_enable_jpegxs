@@ -238,7 +238,7 @@ on installing ffmpeg pluging for Windows follows.
 ## Windows (MSYS2) ffmpeg plugin
 
 ### Preliminary
-First, install MSYS2 and build SVT-JPEG-XS, as described in MSYS2build.md of the root folder.
+First, install MSYS2 and build SVT-JPEG-XS, as described in [MSYS2build.md](./MSYS2build.md).
 
 Export installation location:
 ```
