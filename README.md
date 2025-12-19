@@ -1,11 +1,19 @@
+> The documents of this repo contains information from the first version of my repo 
+[vasilich-tregub/SVT-JPEG-XS](https://github.com/vasilich-tregub/SVT-JPEG-XS) which 
+was deleted or changed in the course of communication with the maintainer of 
+[SVT-JPEG-XS](https://github.com/OpenVisualCloud/SVT-JPEG-XS) about my 
+[SVT-JPEG-XS PR#8](https://github.com/OpenVisualCloud/SVT-JPEG-XS/pull/8), now closed. 
+I post it here because I believe that some of these pieces can be useful, especially for 
+developers using the MSYS2 development platform.
+
 # ffmpeg: enable jpegxs codec
 
-FFmpeg is the swiss army knife of video streaming not only because of the exhaustive  
+FFmpeg is the swiss army knife of video streaming not only because of the exhaustive 
 scope of included codecs and muxdemuxes but also because of the range of applications 
-where FFmpeg is used. Even applications based on legacy solutions (like VfW) benefit from 
-using this pillar of media streaming, and they replace an imposing motley heap of 
-miscellaneous codecs, often piling up around a long-lived system, with a universal 
-FFmpeg-based component (see USECASE(VFW).md in this manual).
+where FFmpeg is used. Even applications based on legacy solutions (like VfW) can 
+benefit from using this pillar of media streaming, replacing an imposing motley heap 
+of miscellaneous codecs, often piling up around a long-lived system, with a universal 
+FFmpeg-based component (see [VFW use case](./USECASE(VFW).md) in this manual).
 
 Multiple uses of FFmpeg make it the ideal place where to incorporate a newly developed 
 codec in the pipeline.
@@ -13,7 +21,7 @@ codec in the pipeline.
 ## Linux ffmpeg plugin
 As compared with OpenVisualCloud's 
 [SVT-JPEG-XS/ffmpeg-plugin/readme](https://github.com/OpenVisualCloud/SVT-JPEG-XS/tree/main/ffmpeg-plugin) 
-(how it read as of April 10, 2025) my repository [vasilich-tregub/SVT-JPEG-XS](https://github.com/vasilich-tregub/SVT-JPEG-XS)
+(how it read as of April 10, 2025), my repository [vasilich-tregub/SVT-JPEG-XS](https://github.com/vasilich-tregub/SVT-JPEG-XS)
 (now closed pull request) explores SVT-JPEG-XS codec integration into FFmpeg while giving 
 details about FFmpeg installation with WSL's Ubuntu 24.04 (Noble Numbat) distribution.
 
@@ -201,7 +209,7 @@ make install
 ```
 and enhanced FFmpeg is ready to use!
 
-#### 5 Demonstration
+#### 7 Demonstration
 Let we transcode a video file \<videofilename>.mp4 using jpegxs encoder for output. In this
 example, we also change the container but you can stay with the original container, if you like:
 ```
@@ -224,18 +232,24 @@ $ ./ffmpeg -ss 00:00:01 -i <videofilename>_jxs.mkv -frames:v 1 -c:v jpegxs -bpp 
 , `\<videofilename>_oneframe.jxs`, can be decoded with SvtJpegxsDecApp or Fraunhofer's 
 jxs\_decoder or viewed with a dedicated jpegxs viewer of your choice.
 
-## Chapter on MSYS2 installation
-
-As of April 2025, OpenVisualCloud's instructions for Windows on their JPEG-XS codec integration into FFmpeg 
-with MSYS2 development platform were incorrect and their code in the folder ffmpeg-plugin failed to compile 
-(see OpenVisualCloud's repo [SVT-JPEG-XS](https://github.com/OpenVisualCloud/SVT-JPEG-XS) ). In my pull 
-request [vasilich-tregub/SVT-JPEG-XS](https://github.com/vasilich-tregub/SVT-JPEG-XS), I corrected their code 
-(details see in the QA session of communication the maintainer and me had around my PR) and gave detailed 
-instructions on building JPEGXS-enabled FFmpeg for Windows in a document 
-[wsl2msys2](https://github.com/vasilich-tregub/SVT-JPEG-XS/blob/main/ffmpeg-plugin/wsl2msys2.md). The section 
-on installing ffmpeg pluging for Windows follows.
-
 ## Windows (MSYS2) ffmpeg plugin
+
+As of April 2025, OpenVisualCloud's instructions on how to integrate their JPEG-XS codec into FFmpeg with 
+MSYS2 development platform were wrong. More disappointing and even unexpected is that their code in the 
+folder ffmpeg-plugin was botched to the state that the code failed to compile. I describe the fact as 
+'unexpected', because the failed code was found in the module which is similar in function to the component 
+that this same developer, Scalable Video Technology, successfully implemented in their other product, 
+[SVT-AV1](https://gitlab.com/AOMediaCodec/SVT-AV1).  
+In SVT-JPEG-XS, the failed parts are the file SVT-JPEG-XS\Source\Lib\Common\ASM_SSE2\x64inc.asm and how the 
+parameters WIN64 and UNIX64 are passed from SVT-JPEG-XS\CMakeLists.txt. Their code had other minor errors:
+details see in the [QA session of communication the maintainer and me had around 
+my PR](https://github.com/OpenVisualCloud/SVT-JPEG-XS/pull/8).  
+My pull request [SVT-JPEG-XS PR#8](https://github.com/OpenVisualCloud/SVT-JPEG-XS/pull/8), now closed, 
+proposed to pull for commit the code and README changes from my repo 
+[vasilich-tregub/SVT-JPEG-XS](https://github.com/vasilich-tregub/SVT-JPEG-XS), where I corrected their code 
+and provided detailed instructions on how to build JPEGXS-enabled FFmpeg for Windows, see 
+[wsl2msys2](https://github.com/vasilich-tregub/SVT-JPEG-XS/blob/main/ffmpeg-plugin/wsl2msys2.md).  
+The section on installing ffmpeg pluging for Windows follows.
 
 ### Preliminary
 First, install MSYS2 and build SVT-JPEG-XS, as described in [MSYS2build.md](./MSYS2build.md).
@@ -279,7 +293,7 @@ pkg-config is already installed (with pacboy -S toolchain:u), so you can verify
 ### 1a. Checkout to branch 6.1 or 7.0 or 7.1 and apply patches
 Exactly as in the subsection __6. Checkout to branch 6.1 or 7.0 or 7.1 and apply patches__ 
 of the __Linux(WSL2) ffmpeg plugin__ section of this document.
-### 3. FFmpeg configure
+### 2. FFmpeg configure
 
 ```
 ./configure --prefix=$HOME/install-dir --bindir=$HOME/bin \

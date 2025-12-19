@@ -260,16 +260,16 @@ Threading, performance:
 
 ## Encoder and Decoder design
 
-Please see [Encoder design](documentation/encoder/svt-jpegxs-encoder-design.md)
+Please see [Encoder design](https://github.com/vasilich-tregub/SVT-JPEG-XS/tree/main/documentation/encoder/svt-jpegxs-encoder-design.md)
 
-Please see [Decoder design](documentation/decoder/svt-jpegxs-decoder-design.md)
+Please see [Decoder design](https://github.com/vasilich-tregub/SVT-JPEG-XS/tree/main/documentation/decoder/svt-jpegxs-decoder-design.md)
 
 
 ## API usage
 
-Please see [Encoder snippet](documentation/encoder/EncoderSnippets.md) for encoder structure overview and simplified encoder usage.
+Please see [Encoder snippet](https://github.com/vasilich-tregub/SVT-JPEG-XS/tree/main/documentation/encoder/EncoderSnippets.md) for encoder structure overview and simplified encoder usage.
 
-Please see [Decoder snippet](documentation/decoder/DecoderSnippets.md) for decoder structure overview and simplified decoder usage.
+Please see [Decoder snippet](https://github.com/vasilich-tregub/SVT-JPEG-XS/tree/main/documentation/decoder/DecoderSnippets.md) for decoder structure overview and simplified decoder usage.
 
 ## Notes
 
